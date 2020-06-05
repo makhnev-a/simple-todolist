@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {addNewTaskAc, deleteTaskByIdAc} from "../redux/reducer";
+import {addNewTaskAc, changeTaskStatusAc, deleteTaskByIdAc} from "../redux/reducer";
 import TodoItem from "./TodoItem";
 
 class TodoList extends React.Component {
@@ -36,6 +36,10 @@ class TodoList extends React.Component {
         this.props.deleteTask(taskId);
     };
 
+    changeStatusTask = (taskId, completed) => {
+        this.props.changeStatusTask(taskId, completed);
+    };
+
     render() {
         return (
             <div>
@@ -47,7 +51,14 @@ class TodoList extends React.Component {
                 <ul>
                     {
                         this.props.todoList.map(todo => {
-                            return <TodoItem taskTitle={todo.title} taskId={todo.id} deleteTask={this.deleteTask}/>
+                            return <TodoItem
+                                key={todo.id}
+                                taskTitle={todo.title}
+                                taskId={todo.id}
+                                completed={todo.complete}
+                                deleteTask={this.deleteTask}
+                                changeStatusTask={this.changeStatusTask}
+                            />
                         })
                     }
                 </ul>
@@ -69,7 +80,11 @@ const mapDispatchToProps = (dispatch) => {
         },
         deleteTask(taskId) {
             dispatch(deleteTaskByIdAc(taskId));
+        },
+        changeStatusTask(taskId, completed) {
+            dispatch(changeTaskStatusAc(taskId, completed))
         }
     };
 };
+
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
