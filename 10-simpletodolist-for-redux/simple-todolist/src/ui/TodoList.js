@@ -1,13 +1,15 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {addNewTaskAc} from "../redux/reducer";
+import {addNewTaskAc, deleteTaskByIdAc} from "../redux/reducer";
+import TodoItem from "./TodoItem";
 
 class TodoList extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            title: ''
+            title: '',
+            currentTaskId: null
         };
     }
 
@@ -30,6 +32,10 @@ class TodoList extends React.Component {
         this.props.addNewTask(newTask);
     };
 
+    deleteTask = (taskId) => {
+        this.props.deleteTask(taskId);
+    };
+
     render() {
         return (
             <div>
@@ -41,10 +47,7 @@ class TodoList extends React.Component {
                 <ul>
                     {
                         this.props.todoList.map(todo => {
-                            return <li key={todo.id}>
-                                <input type="checkbox"/> {todo.title}
-                                <button>X</button>
-                            </li>
+                            return <TodoItem taskTitle={todo.title} taskId={todo.id} deleteTask={this.deleteTask}/>
                         })
                     }
                 </ul>
@@ -63,6 +66,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         addNewTask(newTask) {
             dispatch(addNewTaskAc(newTask));
+        },
+        deleteTask(taskId) {
+            dispatch(deleteTaskByIdAc(taskId));
         }
     };
 };
